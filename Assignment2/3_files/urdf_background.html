@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<!-- saved from url=(0191)https://jupyter.intel4coro.de/user/fkenghagho-iis-tutorial-win26-aibxvzce/files/notebooks/urdf_background.html?_xsrf=2%7C9d56d803%7Caae86867242f0e028bd98bbd633bce92%7C1794134522&1794134602570 -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise 2: URDF Background</title>
+    <!-- Load Tailwind CSS -->
+    <script src="./saved_resource"></script>
+    <style>
+        /* Custom styles for aesthetic placeholders and font */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7fafc; /* Light gray background */
+        }
+        
+        /* Ensures whitespace (including indentation) is preserved */
+        .code-container {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            white-space: pre;
+            overflow-x: auto;
+            line-height: 1.4;
+        }
+        /* Styling for XML/Xacro Tags */
+        .tag-name {
+            color: #569cd6; /* Light Blue */
+            font-weight: bold;
+        }
+        /* Styling for XML/Xacro Attributes */
+        .attribute-name {
+            color: #9cd656; /* Green */
+        }
+        /* Styling for Parameter Variables */
+        .parameter-variable {
+            color: #d69c56; /* Orange */
+            font-weight: 600;
+        }
+        /* Styling for Comments */
+        .comment {
+            color: #6a9955; /* Darker Green */
+        }
+        /* General content within tags (e.g., attribute values) */
+        .attr-value {
+            color: #ce9178; /* Light Brown */
+        }
+        
+        .placeholder-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background-color: #e2e8f0; /* Gray-200 */
+            border: 2px dashed #94a3b8; /* Slate-400 */
+            color: #475569; /* Slate-600 */
+            border-radius: 0.5rem;
+            padding: 1rem;
+            font-weight: 600;
+        }
+        /* Style for the 'bold' effect using the <br> tag in the text */
+        .text-bold-line {
+            font-weight: 700;
+            display: inline;
+        }
+    </style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.mx-auto{margin-left:auto;margin-right:auto}.mb-2{margin-bottom:0.5rem}.mb-3{margin-bottom:0.75rem}.mb-4{margin-bottom:1rem}.mb-6{margin-bottom:1.5rem}.mb-8{margin-bottom:2rem}.ml-4{margin-left:1rem}.mt-3{margin-top:0.75rem}.mt-4{margin-top:1rem}.mt-6{margin-top:1.5rem}.mt-8{margin-top:2rem}.grid{display:grid}.aspect-video{aspect-ratio:16 / 9}.h-auto{height:auto}.w-full{width:100%}.max-w-4xl{max-width:56rem}.list-inside{list-style-position:inside}.list-disc{list-style-type:disc}.grid-cols-1{grid-template-columns:repeat(1, minmax(0, 1fr))}.gap-4{gap:1rem}.space-y-1 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.25rem * var(--tw-space-y-reverse))}.overflow-hidden{overflow:hidden}.rounded-2xl{border-radius:1rem}.rounded-lg{border-radius:0.5rem}.rounded-xl{border-radius:0.75rem}.border{border-width:1px}.border-4{border-width:4px}.border-b{border-bottom-width:1px}.border-l-4{border-left-width:4px}.border-gray-400{--tw-border-opacity:1;border-color:rgb(156 163 175 / var(--tw-border-opacity, 1))}.border-gray-700{--tw-border-opacity:1;border-color:rgb(55 65 81 / var(--tw-border-opacity, 1))}.border-green-500{--tw-border-opacity:1;border-color:rgb(34 197 94 / var(--tw-border-opacity, 1))}.border-yellow-500{--tw-border-opacity:1;border-color:rgb(234 179 8 / var(--tw-border-opacity, 1))}.bg-gray-200{--tw-bg-opacity:1;background-color:rgb(229 231 235 / var(--tw-bg-opacity, 1))}.bg-gray-900{--tw-bg-opacity:1;background-color:rgb(17 24 39 / var(--tw-bg-opacity, 1))}.bg-green-50{--tw-bg-opacity:1;background-color:rgb(240 253 244 / var(--tw-bg-opacity, 1))}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.p-4{padding:1rem}.p-6{padding:1.5rem}.pb-2{padding-bottom:0.5rem}.pl-4{padding-left:1rem}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.font-bold{font-weight:700}.font-semibold{font-weight:600}.italic{font-style:italic}.leading-relaxed{line-height:1.625}.text-gray-300{--tw-text-opacity:1;color:rgb(209 213 219 / var(--tw-text-opacity, 1))}.text-gray-600{--tw-text-opacity:1;color:rgb(75 85 99 / var(--tw-text-opacity, 1))}.text-gray-700{--tw-text-opacity:1;color:rgb(55 65 81 / var(--tw-text-opacity, 1))}.text-gray-800{--tw-text-opacity:1;color:rgb(31 41 55 / var(--tw-text-opacity, 1))}.text-green-700{--tw-text-opacity:1;color:rgb(21 128 61 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.shadow-2xl{--tw-shadow:0 25px 50px -12px rgb(0 0 0 / 0.25);--tw-shadow-colored:0 25px 50px -12px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-lg{--tw-shadow:0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-sm{--tw-shadow:0 1px 2px 0 rgb(0 0 0 / 0.05);--tw-shadow-colored:0 1px 2px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-xl{--tw-shadow:0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 20px 25px -5px var(--tw-shadow-color), 0 8px 10px -6px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}@media (min-width: 640px){.sm\:p-8{padding:2rem}}@media (min-width: 768px){.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:p-10{padding:2.5rem}}</style></head>
+<body class="p-4 sm:p-8">
+
+    <div class="max-w-4xl mx-auto bg-white shadow-xl rounded-2xl p-6 md:p-10">
+        <p class="text-gray-600 mb-8 italic">
+            A succinct review of the Unified Robot Description Format for environmental modeling.
+        </p>
+
+        <!-- What is URDF? -->
+        <h2 class="text-2xl font-bold text-gray-800 mt-6 mb-3">
+            What is URDF?
+        </h2>
+        <p class="text-gray-700 mb-4">
+           <span class="text-bold-line">URDF</span> (Unified Robot Description Format) was designed to describe a robot's physical structure (<span class="text-bold-line">links</span>) and connections (<span class="text-bold-line">joints</span>). URDF can be regarded as the mathematical model of the robot body as it provide information about the physical geometry, appearance, kinematics, dynamics, and statics. Once written, the URDF file can be loaded in sumalors such as RViz, Gazebo, Mujoco, Unreal Engine, PyBullet. It is essential in the design phase (model validation), development phase (part of program), and execution phase (verification and debugging).
+        </p>
+
+        <!-- Video Placeholder -->
+        <div class="placeholder-box w-full aspect-video bg-gray-200 rounded-lg overflow-hidden border border-gray-400">
+        
+           <video width="100%%" height="300" autoplay="" loop="" muted="" controls="">
+                  <source src="https://nc.uni-bremen.de/public.php/dav/files/ooTHFe9B4XGgFKP/?accept=zip" type="video/mp4">
+                  Your browser does not support the video tag.
+          </video>
+    </div>
+
+        <h2 class="text-2xl font-bold text-gray-800 mt-6 mb-3">
+            Links and Joints in URDF
+        </h2>
+
+        <!-- Links Section -->
+        <div class="mb-6 border-l-4 border-yellow-500 pl-4">
+            <h3 class="text-xl font-semibold text-gray-800 mb-2">
+                Links (Physical Objects)
+            </h3>
+            <p class="text-gray-700 mb-2">
+                A <span class="text-bold-line">Link</span> represents a physical object in the environment (e.g., a box, furniture). It is defined by parameters critical for physics-based simulations (e.g., Gazebo):
+            </p>
+            <ul class="list-disc list-inside space-y-1 ml-4 text-gray-700">
+                <li><span class="text-bold-line">Visual Parameter:</span> Defines the link's <span class="text-bold-line">appearance</span> and  <span class="text-bold-line">shape</span>.</li>
+                <li><span class="text-bold-line">Collision Parameter:</span> Defines the simplified shape used for <span class="text-bold-line">collision detection</span> (to reduce computational load).</li>
+                <li><span class="text-bold-line">Inertial Parameter:</span> Defines how the link <span class="text-bold-line">behaves under physical forces</span> (mass, inertia).</li>
+            </ul>
+             <hr style="
+        height: 20px; 
+        border: none; 
+        background-color: transparent; 
+        margin: 0; 
+        padding: 0;
+    ">
+            <img width="50px" height="20px" src="./link.png" alt="Illustration of a link's description in." class="w-full h-auto rounded-xl shadow-lg border-4 border-white-500">
+        </div>
+
+        <!-- Joints Section -->
+        <div class="mb-6 border-l-4 border-green-500 pl-4">
+            <h3 class="text-xl font-semibold text-gray-800 mb-2">
+                Joints (Connections and Motion)
+            </h3>
+            <p class="text-gray-700 mb-2">
+                <span class="text-bold-line">Joints</span> connect links and define their movement relative to each other. For environmental models, two types are fundamental for dynamic objects:
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                <div class="p-4 bg-green-50 rounded-lg shadow-sm">
+                    <p class="font-bold text-lg text-green-700">Revolute Joints</p>
+                    <p class="text-sm text-gray-600 mb-3">Allow for <span class="text-bold-line">rotary motion</span> (e.g., a door hinge allowing a fridge door to swing open). Defined by type, axis, and motion limits.</p>
+                    <!-- Revolute Joint Image Placeholder -->
+                    <div>
+                        <p><img width="50px" height="20px" src="./revolute-joint.jpg" alt="Illustration of a link's description in." class="w-full h-auto rounded-xl shadow-lg border-4 border-white-500">
+                        </p>
+                    </div>
+                </div>
+                <div class="p-4 bg-green-50 rounded-lg shadow-sm">
+                    <p class="font-bold text-lg text-green-700">Prismatic Joints</p>
+                    <p class="text-sm text-gray-600 mb-3">Perform <span class="text-bold-line">linear motion</span> (e.g., a drawer sliding in and out of a cabinet). Defined by type, axis, and motion limits.</p>
+                    <!-- Prismatic Joint Image Placeholder -->
+                    <div>
+                        <p><img width="50px" height="20px" src="./prismatic-joint.jpg" alt="Illustration of a link's description in." class="w-full h-auto rounded-xl shadow-lg border-4 border-white-500">
+                       </p>
+                    </div>
+                </div>
+            </div>
+            <p>
+            </p><hr style="
+        height: 20px; 
+        border: none; 
+        background-color: transparent; 
+        margin: 0; 
+        padding: 0;
+    ">
+                A <span class="text-bold-line">joint</span> connects a parent to a child link and requires parameters for type, axis, and limits (for prismatic/revolute types) to define the specific range of motion:
+                
+                <ul class="list-disc list-inside space-y-1 ml-4 text-gray-700">
+                <li><span class="text-bold-line">Type:</span> defines the type of mechanical constraint and movement. </li>
+                <li><span class="text-bold-line">Axis:</span> a 3D vector (x, y, z) that specifies the direction of movement. </li>
+                <li><span class="text-bold-line">Limits:</span>defines the mechanical constraints (velocity, position range, effort).</li>
+            </ul>
+                
+            <p></p>
+            <hr style="
+        height: 20px; 
+        border: none; 
+        background-color: transparent; 
+        margin: 0; 
+        padding: 0;
+    ">
+            <img width="50px" height="20px" src="./joint2.png" alt="Illustration of a link's description in." class="w-full h-auto rounded-xl shadow-lg border-4 border-white-500">
+        </div>
+        
+        
+        <!-- Composing URDF -->
+        <div class="mb-6 border-l-4 border-black-500 pl-4">
+<h3 class="text-xl font-semibold text-gray-800 mb-2">
+Generalization (Include and Parameters)
+</h3>
+<p class="text-gray-700 leading-relaxed">
+For complex robots, the Universal Robot Description Format (URDF) leverages concepts of modularity and parameterization to achieve high readability, reusability, and configurability. Instead of creating a single, monolithic file for the entire system, the robot is built by defining its components (such as individual links, joints, a gripper, or a mobile base) in separate URDF or Xacro files.
+</p>
+<p class="text-gray-700 leading-relaxed mt-3">
+These separate definitions are then brought together using an include mechanism in a top-level URDF file. This composition allows developers to maintain and update sub-assemblies independently. For example, a standard wheel module can be included multiple times, greatly simplifying the definition of a four-wheeled base.
+</p>
+<p class="text-gray-700 leading-relaxed mt-3">
+The key to true reusability lies in parameterization. Instead of hardcoding dimensions, masses, or joint limits, these values are treated as variables. The syntax <code>${param_name}</code> is used throughout the component files to reference these external values. When the top-level URDF file includes a sub-assembly, it can pass specific values to these parameters, allowing a single component file to describe many variations of the same part (e.g., a "motor_unit" with different torque limits based on the passed-in parameter). This capability makes the robot model highly flexible and scalable.
+</p>
+
+<div class="max-w-4xl mx-auto">
+    <h1 class="text-3xl font-bold mb-6 text-gray-800">URDF/Xacro Modular Robot Code</h1>
+    <p class="text-lg text-gray-600 mb-8">
+        This is the consolidated XACRO structure for your robot, including the main file and the externally defined base macro. Note the inclusion of the external macro and the parameterized calls.
+    </p>
+
+    <div class="bg-gray-900 shadow-2xl rounded-lg p-6">
+        <h2 class="text-xl font-semibold text-white mb-4 border-b border-gray-700 pb-2">File 1: main_robot.xacro (Main Assembly)</h2>
+        <pre class="code-container text-sm text-gray-300"><span class="tag-name">&lt;?xml</span> <span class="attribute-name">version</span>=<span class="attr-value">"1.0"</span><span class="tag-name">?&gt;</span>
+<span class="tag-name">&lt;robot</span> <span class="attribute-name">name</span>=<span class="attr-value">"red_cylinder_robot_arm"</span> <span class="attribute-name">xmlns:xacro</span>=<span class="attr-value">"http://www.ros.org/wiki/xacro"</span><span class="tag-name">&gt;</span>
+
+  <span class="tag-name">&lt;xacro:include</span> <span class="attribute-name">filename</span>=<span class="attr-value">"base_macros.xacro"</span> <span class="tag-name">/&gt;</span> <span class="comment">&lt;!-- External Base Macro Included --&gt;</span>
+
+  <span class="tag-name">&lt;xacro:macro</span> <span class="attribute-name">name</span>=<span class="attr-value">"cylinder_link"</span> <span class="attribute-name">params</span>=<span class="attr-value">"link_name color_name rgba_value radius length mass_value"</span><span class="tag-name">&gt;</span>
+    <span class="tag-name">&lt;link</span> <span class="attribute-name">name</span>=<span class="attr-value">"${link_name}"</span><span class="tag-name">&gt;</span>
+      <span class="tag-name">&lt;inertial&gt;</span>
+        <span class="tag-name">&lt;origin</span> <span class="attribute-name">xyz</span>=<span class="attr-value">"0 0 0"</span> <span class="attribute-name">rpy</span>=<span class="attr-value">"0 0 0"</span><span class="tag-name">/&gt;</span>
+        <span class="tag-name">&lt;mass</span> <span class="attribute-name">value</span>=<span class="attr-value">"${mass_value}"</span><span class="tag-name">/&gt;</span>
+        <span class="tag-name">&lt;inertia</span> 
+          <span class="attribute-name">ixx</span>=<span class="attr-value">"${(mass_value/12.0) * (3*radius*radius + length*length)}"</span> 
+          <span class="attribute-name">ixy</span>=<span class="attr-value">"0.0"</span> <span class="attribute-name">ixz</span>=<span class="attr-value">"0.0"</span>
+          <span class="attribute-name">iyy</span>=<span class="attr-value">"${(mass_value/12.0) * (3*radius*radius + length*length)}"</span> 
+          <span class="attribute-name">iyz</span>=<span class="attr-value">"0.0"</span>
+          <span class="attribute-name">izz</span>=<span class="attr-value">"${(mass_value/2.0) * (radius*radius)}"</span>
+        <span class="tag-name">/&gt;</span>
+      <span class="tag-name">&lt;/inertial&gt;</span>
+      <span class="tag-name">&lt;visual&gt;</span>
+        <span class="tag-name">&lt;origin</span> <span class="attribute-name">xyz</span>=<span class="attr-value">"0 0 0"</span> <span class="attribute-name">rpy</span>=<span class="attr-value">"0 0 0"</span><span class="tag-name">/&gt;</span>
+        <span class="tag-name">&lt;geometry&gt;&lt;cylinder</span> <span class="attribute-name">radius</span>=<span class="attr-value">"${radius}"</span> <span class="attribute-name">length</span>=<span class="attr-value">"${length}"</span><span class="tag-name">/&gt;&lt;/geometry&gt;</span>
+        <span class="tag-name">&lt;material</span> <span class="attribute-name">name</span>=<span class="attr-value">"${color_name}"</span><span class="tag-name">&gt;&lt;color</span> <span class="attribute-name">rgba</span>=<span class="attr-value">"${rgba_value}"</span><span class="tag-name">/&gt;&lt;/material&gt;</span>
+      <span class="tag-name">&lt;/visual&gt;</span>
+      <span class="tag-name">&lt;collision&gt;</span>
+        <span class="tag-name">&lt;origin</span> <span class="attribute-name">xyz</span>=<span class="attr-value">"0 0 0"</span> <span class="attribute-name">rpy</span>=<span class="attr-value">"0 0 0"</span><span class="tag-name">/&gt;</span>
+        <span class="tag-name">&lt;geometry&gt;&lt;cylinder</span> <span class="attribute-name">radius</span>=<span class="attr-value">"${radius}"</span> <span class="attribute-name">length</span>=<span class="attr-value">"${length}"</span><span class="tag-name">/&gt;&lt;/geometry&gt;</span>
+      <span class="tag-name">&lt;/collision&gt;</span>
+    <span class="tag-name">&lt;/link&gt;</span>
+  <span class="tag-name">&lt;/xacro:macro&gt;</span>
+
+  <span class="tag-name">&lt;xacro:base_link_macro</span> 
+    <span class="attribute-name">link_name</span>=<span class="attr-value">"base_link"</span> 
+    <span class="attribute-name">size_x</span>=<span class="attr-value">"0.2"</span> <span class="attribute-name">size_y</span>=<span class="attr-value">"0.2"</span> <span class="attribute-name">size_z</span>=<span class="attr-value">"0.02"</span> 
+    <span class="attribute-name">mass_value</span>=<span class="attr-value">"2.0"</span> 
+    <span class="attribute-name">xyz_origin</span>=<span class="attr-value">"0 0 0.01"</span>
+  <span class="tag-name">/&gt;</span>
+
+  <span class="tag-name">&lt;link</span> <span class="attribute-name">name</span>=<span class="attr-value">"slider_link"</span><span class="tag-name">&gt;</span>
+    <span class="tag-name">&lt;inertial&gt;</span>
+      <span class="tag-name">&lt;origin</span> <span class="attribute-name">xyz</span>=<span class="attr-value">"0.1 0 0"</span> <span class="attribute-name">rpy</span>=<span class="attr-value">"0 0 0"</span><span class="tag-name">/&gt;</span>
+      <span class="tag-name">&lt;mass</span> <span class="attribute-name">value</span>=<span class="attr-value">"0.5"</span><span class="tag-name">/&gt;</span>
+      <span class="tag-name">&lt;inertia</span> <span class="attribute-name">ixx</span>=<span class="attr-value">"0.005"</span> <span class="attribute-name">ixy</span>=<span class="attr-value">"0.0"</span> <span class="attribute-name">ixz</span>=<span class="attr-value">"0.0"</span> <span class="attribute-name">iyy</span>=<span class="attr-value">"0.005"</span> <span class="attribute-name">iyz</span>=<span class="attr-value">"0.0"</span> <span class="attribute-name">izz</span>=<span class="attr-value">"0.001"</span><span class="tag-name">/&gt;</span>
+    <span class="tag-name">&lt;/inertial&gt;</span>
+    <span class="tag-name">&lt;visual&gt;</span>
+      <span class="tag-name">&lt;origin</span> <span class="attribute-name">xyz</span>=<span class="attr-value">"0.1 0 0"</span> <span class="attribute-name">rpy</span>=<span class="attr-value">"0 0 0"</span><span class="tag-name">/&gt;</span>
+      <span class="tag-name">&lt;geometry&gt;&lt;box</span> <span class="attribute-name">size</span>=<span class="attr-value">"0.2 0.05 0.05"</span><span class="tag-name">/&gt;&lt;/geometry&gt;</span>
+      <span class="tag-name">&lt;material</span> <span class="attribute-name">name</span>=<span class="attr-value">"blue"</span><span class="tag-name">&gt;&lt;color</span> <span class="attribute-name">rgba</span>=<span class="attr-value">"0.0 0.0 0.8 1.0"</span><span class="tag-name">/&gt;&lt;/material&gt;</span>
+    <span class="tag-name">&lt;/visual&gt;</span>
+    <span class="tag-name">&lt;collision&gt;&lt;geometry&gt;&lt;box</span> <span class="attribute-name">size</span>=<span class="attr-value">"0.2 0.05 0.05"</span><span class="tag-name">/&gt;&lt;/geometry&gt;&lt;/collision&gt;</span>
+  <span class="tag-name">&lt;/link&gt;</span>
+
+  <span class="tag-name">&lt;xacro:cylinder_link</span>
+    <span class="attribute-name">link_name</span>=<span class="attr-value">"red_cylinder_link"</span> 
+    <span class="attribute-name">color_name</span>=<span class="attr-value">"red"</span> 
+    <span class="attribute-name">rgba_value</span>=<span class="attr-value">"1.0 0.0 0.0 1.0"</span> 
+    <span class="attribute-name">radius</span>=<span class="attr-value">"0.05"</span> 
+    <span class="attribute-name">length</span>=<span class="attr-value">"0.2"</span> 
+    <span class="attribute-name">mass_value</span>=<span class="attr-value">"0.5"</span>
+  <span class="tag-name">/&gt;</span>
+
+  <span class="tag-name">&lt;link</span> <span class="attribute-name">name</span>=<span class="attr-value">"world"</span><span class="tag-name">/&gt;</span>
+  
+  <span class="tag-name">&lt;joint</span> <span class="attribute-name">name</span>=<span class="attr-value">"world_to_base_joint"</span> <span class="attribute-name">type</span>=<span class="attr-value">"fixed"</span><span class="tag-name">&gt;</span>
+    <span class="tag-name">&lt;parent</span> <span class="attribute-name">link</span>=<span class="attr-value">"world"</span><span class="tag-name">/&gt;</span>
+    <span class="tag-name">&lt;child</span> <span class="attribute-name">link</span>=<span class="attr-value">"base_link"</span><span class="tag-name">/&gt;</span>
+    <span class="tag-name">&lt;origin</span> <span class="attribute-name">xyz</span>=<span class="attr-value">"0 0 0.01"</span> <span class="attribute-name">rpy</span>=<span class="attr-value">"0 0 0"</span><span class="tag-name">/&gt;</span>
+  <span class="tag-name">&lt;/joint&gt;</span>
+  
+  <span class="tag-name">&lt;joint</span> <span class="attribute-name">name</span>=<span class="attr-value">"prismatic_slider_joint"</span> <span class="attribute-name">type</span>=<span class="attr-value">"prismatic"</span><span class="tag-name">&gt;</span>
+    <span class="tag-name">&lt;parent</span> <span class="attribute-name">link</span>=<span class="attr-value">"base_link"</span><span class="tag-name">/&gt;</span>
+    <span class="tag-name">&lt;child</span> <span class="attribute-name">link</span>=<span class="attr-value">"slider_link"</span><span class="tag-name">/&gt;</span>
+    <span class="tag-name">&lt;origin</span> <span class="attribute-name">xyz</span>=<span class="attr-value">"0 0 0.01"</span> <span class="attribute-name">rpy</span>=<span class="attr-value">"0 0 0"</span><span class="tag-name">/&gt;</span> 
+    <span class="tag-name">&lt;axis</span> <span class="attribute-name">xyz</span>=<span class="attr-value">"1 0 0"</span><span class="tag-name">/&gt;</span> <span class="tag-name">&lt;limit</span> <span class="attribute-name">effort</span>=<span class="attr-value">"100.0"</span> <span class="attribute-name">velocity</span>=<span class="attr-value">"0.5"</span> <span class="attribute-name">lower</span>=<span class="attr-value">"-0.1"</span> <span class="attribute-name">upper</span>=<span class="attr-value">"0.2"</span><span class="tag-name">/&gt;</span> 
+  <span class="tag-name">&lt;/joint&gt;</span>
+
+  <span class="tag-name">&lt;joint</span> <span class="attribute-name">name</span>=<span class="attr-value">"revolute_cylinder_joint"</span> <span class="attribute-name">type</span>=<span class="attr-value">"revolute"</span><span class="tag-name">&gt;</span>
+    <span class="tag-name">&lt;parent</span> <span class="attribute-name">link</span>=<span class="attr-value">"slider_link"</span><span class="tag-name">/&gt;</span>
+    <span class="tag-name">&lt;child</span> <span class="attribute-name">link</span>=<span class="attr-value">"red_cylinder_link"</span><span class="tag-name">/&gt;</span>
+    <span class="tag-name">&lt;origin</span> <span class="attribute-name">xyz</span>=<span class="attr-value">"0.2 0 0"</span> <span class="attribute-name">rpy</span>=<span class="attr-value">"0 0 0"</span><span class="tag-name">/&gt;</span> 
+    <span class="tag-name">&lt;axis</span> <span class="attribute-name">xyz</span>=<span class="attr-value">"1 0 0"</span><span class="tag-name">/&gt;</span> <span class="tag-name">&lt;limit</span> <span class="attribute-name">effort</span>=<span class="attr-value">"100.0"</span> <span class="attribute-name">velocity</span>=<span class="attr-value">"0.5"</span> <span class="attribute-name">lower</span>=<span class="attr-value">"-3.57"</span> <span class="attribute-name">upper</span>=<span class="attr-value">"3.57"</span><span class="tag-name">/&gt;</span> 
+  <span class="tag-name">&lt;/joint&gt;</span>
+
+<span class="tag-name">&lt;/robot&gt;</span></pre>
+    </div>
+
+    <div class="bg-gray-900 shadow-2xl rounded-lg p-6 mt-8">
+        <h2 class="text-xl font-semibold text-white mb-4 border-b border-gray-700 pb-2">File 2: base_macros.xacro (External Definition)</h2>
+        <pre class="code-container text-sm text-gray-300"><span class="tag-name">&lt;?xml</span> <span class="attribute-name">version</span>=<span class="attr-value">"1.0"</span><span class="tag-name">?&gt;</span>
+<span class="tag-name">&lt;robot</span> <span class="attribute-name">xmlns:xacro</span>=<span class="attr-value">"http://www.ros.org/wiki/xacro"</span><span class="tag-name">&gt;</span>
+
+  <span class="tag-name">&lt;xacro:macro</span> <span class="attribute-name">name</span>=<span class="attr-value">"base_link_macro"</span> <span class="attribute-name">params</span>=<span class="attr-value">"link_name size_x size_y size_z mass_value xyz_origin"</span><span class="tag-name">&gt;</span>
+    <span class="tag-name">&lt;link</span> <span class="attribute-name">name</span>=<span class="attr-value">"${link_name}"</span><span class="tag-name">&gt;</span>
+      <span class="tag-name">&lt;inertial&gt;</span>
+        <span class="tag-name">&lt;origin</span> <span class="attribute-name">xyz</span>=<span class="attr-value">"${xyz_origin}"</span> <span class="attribute-name">rpy</span>=<span class="attr-value">"0 0 0"</span><span class="tag-name">/&gt;</span> 
+        <span class="tag-name">&lt;mass</span> <span class="attribute-name">value</span>=<span class="attr-value">"${mass_value}"</span><span class="tag-name">/&gt;</span>
+        <span class="tag-name">&lt;inertia</span> 
+          <span class="attribute-name">ixx</span>=<span class="attr-value">"${(mass_value/12.0) * (size_y*size_y + size_z*size_z)}"</span> 
+          <span class="attribute-name">ixy</span>=<span class="attr-value">"0.0"</span> <span class="attribute-name">ixz</span>=<span class="attr-value">"0.0"</span>
+          <span class="attribute-name">iyy</span>=<span class="attr-value">"${(mass_value/12.0) * (size_x*size_x + size_z*size_z)}"</span> 
+          <span class="attribute-name">iyz</span>=<span class="attr-value">"0.0"</span>
+          <span class="attribute-name">izz</span>=<span class="attr-value">"${(mass_value/12.0) * (size_x*size_x + size_y*size_y)}"</span>
+        <span class="tag-name">/&gt;</span>
+      <span class="tag-name">&lt;/inertial&gt;</span>
+      <span class="tag-name">&lt;visual&gt;</span>
+        <span class="tag-name">&lt;origin</span> <span class="attribute-name">xyz</span>=<span class="attr-value">"0 0 0"</span> <span class="attribute-name">rpy</span>=<span class="attr-value">"0 0 0"</span><span class="tag-name">/&gt;</span>
+        <span class="tag-name">&lt;geometry&gt;&lt;box</span> <span class="attribute-name">size</span>=<span class="attr-value">"${size_x} ${size_y} ${size_z}"</span><span class="tag-name">/&gt;&lt;/geometry&gt;</span>
+        <span class="tag-name">&lt;material</span> <span class="attribute-name">name</span>=<span class="attr-value">"grey"</span><span class="tag-name">&gt;</span>
+          <span class="tag-name">&lt;color</span> <span class="attribute-name">rgba</span>=<span class="attr-value">"0.5 0.5 0.5 1.0"</span><span class="tag-name">/&gt;</span>
+        <span class="tag-name">&lt;/material&gt;</span>
+      <span class="tag-name">&lt;/visual&gt;</span>
+      <span class="tag-name">&lt;collision&gt;</span>
+        <span class="tag-name">&lt;geometry&gt;&lt;box</span> <span class="attribute-name">size</span>=<span class="attr-value">"${size_x} ${size_y} ${size_z}"</span><span class="tag-name">/&gt;&lt;/geometry&gt;</span>
+      <span class="tag-name">&lt;/collision&gt;</span>
+    <span class="tag-name">&lt;/link&gt;</span>
+  <span class="tag-name">&lt;/xacro:macro&gt;</span>
+
+<span class="tag-name">&lt;/robot&gt;</span></pre>
+    </div>
+
+    <style>
+      .tag-name { color: #f92672; } /* Magenta/Pink for tags like <link> or <xacro:macro> */
+      .attribute-name { color: #a6e22e; } /* Green for attributes like name or params */
+      .attr-value { color: #e6db74; } /* Yellow for attribute values (the strings) */
+      .comment { color: #75715e; font-style: italic; } /* Gray for comments */
+      .code-container {
+        white-space: pre-wrap; /* Ensures line wrapping in the code block */
+        word-break: break-all;
+      }
+    </style>
+</div>
+        <div>
+        <h3 class="text-xl font-semibold text-gray-800 mb-2">
+               Robot Design (A Function of Goals)
+            </h3>
+        
+              <hr style="
+        height: 20px; 
+        border: none; 
+        background-color: transparent; 
+        margin: 0; 
+        padding: 0;
+    ">
+            <img width="50px" height="20px" src="./tool.jpg" alt="Illustration of a link's description in." class="w-full h-auto rounded-xl shadow-lg border-4 border-white-500">
+        </div>
+
+    </div>
+
+
+
+</div></body></html>

@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+
+<robot name="domestic_assistant"
+       xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <xacro:property name="base_radius" value="0.20"/>
+    <xacro:property name="base_height" value="0.10"/>
+    <xacro:property name="link1_length" value="0.60"/>
+    <xacro:property name="link2_length" value="0.80"/>
+    <xacro:property name="gripper_span" value="0.2"/>
+
+    <xacro:include filename="base.xacro"/>
+    <xacro:include filename="arm.xacro"/>
+    <xacro:include filename="gripper.xacro"/>
+
+    <xacro:robot_base
+        base_radius="${base_radius}"
+        base_height="${base_height}"/>
+
+    <xacro:robot_arm
+        base_height="${base_height}"
+        link1_length="${link1_length}"
+        link2_length="${link2_length}"/>
+
+    <xacro:robot_gripper
+        parent="wrist_link"
+        gripper_span="${gripper_span}"/>
+
+</robot>
